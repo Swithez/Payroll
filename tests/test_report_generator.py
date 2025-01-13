@@ -9,6 +9,7 @@ from flask_payroll.models.salaried_employee import SalariedEmployee
 EXPORT_DIR = "tests/export"
 os.makedirs(EXPORT_DIR, exist_ok=True)
 
+# Фикстура для создания объекта Payroll с тестовыми данными о сотрудниках.
 @pytest.fixture
 def payroll_with_data():
     payroll = Payroll()
@@ -23,24 +24,28 @@ def payroll_with_data():
             payroll.add_employee(SalariedEmployee(emp["name"], emp["employee_id"], emp["annual_salary"]))
     return payroll
 
+# Тест генерации CSV-отчета.
 def test_csv_report_generation(payroll_with_data):
     report_generator = ReportGeneratorFactory.get_report_generator(ReportFormat.CSV)
     report_filename = os.path.join(EXPORT_DIR, "test_payroll_report.csv")
     report_generator.save_report(payroll_with_data, report_filename)
     assert os.path.exists(report_filename)
 
+# Тест генерации JSON-отчета.
 def test_json_report_generation(payroll_with_data):
     report_generator = ReportGeneratorFactory.get_report_generator(ReportFormat.JSON)
     report_filename = os.path.join(EXPORT_DIR, "test_payroll_report.json")
     report_generator.save_report(payroll_with_data, report_filename)
     assert os.path.exists(report_filename)
 
+# Тест фабрики генераторов отчетов.
 def test_report_generator_factory():
     assert isinstance(ReportGeneratorFactory.get_report_generator(ReportFormat.CSV), CSVReportGenerator)
     assert isinstance(ReportGeneratorFactory.get_report_generator(ReportFormat.JSON), JSONReportGenerator)
     with pytest.raises(ValueError):
         ReportGeneratorFactory.get_report_generator("InvalidFormat")
 
+# Тест генерации CSV-отчета для пустой ведомости.
 def test_csv_report_generation_empty_payroll():
     payroll = Payroll()
     report_generator = ReportGeneratorFactory.get_report_generator(ReportFormat.CSV)
@@ -48,6 +53,7 @@ def test_csv_report_generation_empty_payroll():
     report_generator.save_report(payroll, report_filename)
     assert os.path.exists(report_filename)
 
+# Тест генерации JSON-отчета для пустой ведомости.
 def test_json_report_generation_empty_payroll():
     payroll = Payroll()
     report_generator = ReportGeneratorFactory.get_report_generator(ReportFormat.JSON)
