@@ -16,10 +16,12 @@ ALLOWED_EXTENSIONS = {'json'}
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(EXPORT_FOLDER, exist_ok=True)
 
+#  Проверяет, имеет ли загруженный файл допустимое расширение JSON.
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+# Обработчик главной страницы приложения
 @app.route('/', methods=['GET', 'POST'])
 def index():
     payroll = None
@@ -70,7 +72,7 @@ def index():
                 error = f"File not found: {report_filename}"
 
         except KeyError:
-            error = "Необходимо выбрать формат отчёта" # Сообщение об ошибке
+            error = "Необходимо выбрать формат отчёта"
         except Exception as e:
             error = str(e)
 
