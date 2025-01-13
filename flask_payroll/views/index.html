@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block title %}Главная{% endblock %}
+{% block content %}
+
+    <h1>Аналитика по заработной платой</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="file" class="form-label">Выберите JSON файл (необязательно):</label>
+            <input class="form-control" type="file" name="file" id="file">
+            {% if 'file_path' in session and session['file_path'] != DEFAULT_EMPLOYEES_FILE %}
+                <div class="form-text text-success">Используется загруженный файл.</div>
+            {% elif 'file_path' in session and session['file_path'] == DEFAULT_EMPLOYEES_FILE %}
+                <div class="form-text">Используется файл по умолчанию (employees.json).</div>
+            {% else %}
+                <div class="form-text">Файл не загружен.</div>
+            {% endif %}
+        </div>
+        <button type="submit" class="btn btn-primary">Загрузить/Обновить</button>
+    </form>
+
+    {% if error %}
+        <div class="alert alert-danger mt-3" role="alert">{{ error }}</div>
+    {% endif %}
+
+    {% if payroll %}
+        <h2>Сотрудники</h2>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Имя</th>
+                <th>ID</th>
+                <th>Тип тарифа</th>
+                <th>Ставка/Зарплата</th>
+                <th>Отработанные часы (если есть)</th>
+                <th>Зарплата</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for employee in payroll.employees %}
+                <tr>
+                    <td>{{ employee.name }}</td>
+                    <td>{{ employee.employee_id }}</td>
+                    <td>
+                        {% if employee.__class__.__name__ == 'HourlyEmployee' %}
+                            Почасовой
+                        {% elif employee.__class__.__name__ == 'SalariedEmployee' %}
+                            Фиксированный
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if employee.__class__.__name__ == 'HourlyEmployee' %}
+                            {{ employee.hourly_rate }}
+                        {% elif employee.__class__.__name__ == 'SalariedEmployee' %}
+                            {{ employee.annual_salary }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if employee.__class__.__name__ == 'HourlyEmployee' %}
+                            {{ employee.hours_worked }}
+                        {% endif %}
+                    </td>
+                    <td>{{ employee.calculate_salary() }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <h2>Статистика</h2>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Показатель</th>
+                <th scope="col">Значение</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for key, value in statistics.items() %}
+                <tr>
+                    <td>{{ key }}</td>
+                    <td>{{ value }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <h2>Генерация отчета</h2>
+        <form method="POST">
+            <input type="hidden" name="file_path" value="{{ file_path }}">
+            <div class="mb-3">
+                <label for="format" class="form-label">Формат отчета:</label>
+                <select name="format" id="format" class="form-select">
+                    <option value="CSV">CSV</option>
+                    <option value="JSON">JSON</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Сгенерировать отчет</button>
+        </form>
+    {% endif %}
+
+{% endblock %}

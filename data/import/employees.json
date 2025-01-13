@@ -1,0 +1,5 @@
+[
+    {"type": "HourlyEmployee", "name": "Alice", "employee_id": 1, "hourly_rate": 20, "hours_worked": 160},
+    {"type": "SalariedEmployee", "name": "Bob", "employee_id": 2, "annual_salary": 60000},
+    {"type": "HourlyEmployee", "name": "Charlie", "employee_id": 3, "hourly_rate": 25, "hours_worked": 120}
+]

@@ -1,0 +1,22 @@
+[
+    {
+      "employee_id": 1,
+      "name": "Иван Иванов",
+      "type": "HourlyEmployee",
+      "hourly_rate": 125,
+      "hours_worked": 160
+    },
+    {
+      "employee_id": 2,
+      "name": "Петр Петров",
+      "type": "SalariedEmployee",
+      "annual_salary": 5000
+    },
+      {
+      "employee_id": 3,
+      "name": "Алексей Алексеев",
+      "type": "HourlyEmployee",
+      "hourly_rate": 250,
+      "hours_worked": 180
+    }
+]
