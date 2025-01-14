@@ -44,7 +44,7 @@ def test_get_employees_by_type(payroll_with_data):
 def test_import_employees_from_json():
     payroll = Payroll()
     mock_json_data = [{'name': 'Test', 'employee_id': 1, 'type': 'HourlyEmployee', 'hourly_rate': 100, 'hours_worked': 10}]
-    with patch('builtins.open', mock_open(read_data=str(mock_json_data).replace("'", '"'))): # исправлено
+    with patch('builtins.open', mock_open(read_data=str(mock_json_data).replace("'", '"'))):
         payroll.import_employees_from_json("fake_path.json")
     assert len(payroll.employees) == 1
     assert isinstance(payroll.employees[0], HourlyEmployee)
@@ -61,7 +61,7 @@ def test_import_employees_from_json_file_not_found():
 # Тест обработки отсутствия ключа 'type' в данных JSON.
 def test_import_employees_from_json_key_error():
     payroll = Payroll()
-    mock_json_data = [{'name': 'Test', 'employee_id': 1, 'hourly_rate': 100, 'hours_worked': 10}] #type отсутствует
+    mock_json_data = [{'name': 'Test', 'employee_id': 1, 'hourly_rate': 100, 'hours_worked': 10}]
     with patch('builtins.open', mock_open(read_data=str(mock_json_data).replace("'", '"'))):
         payroll.import_employees_from_json("fake_path.json")
     assert len(payroll.employees) == 0
